@@ -66,7 +66,11 @@ export const isBlocked = async (req, res) => {
       isBlocked: false,
       errorMessage: ''
     };
+
+
     let data_headers = {};
+
+    return res.status(200).send(process.env)
     for (const [name, value] of Object.entries(process.env)) {
       let val = Array.isArray(value) ? value.join(', ') : value;
       if (val.length < 1024 || name === 'HTTP_REFERER' || name === 'QUERY_STRING' || name === 'REQUEST_URI' || name === 'HTTP_USER_AGENT') {
@@ -75,8 +79,10 @@ export const isBlocked = async (req, res) => {
         data_headers[name] = 'TRIMMED: ' + val.substring(0, 1024);
       }
     }
-    console.log(data_headers)
 
+    data_headers["HTTP_USER_AGENT"] = req.headers['user-agent']
+
+    console.log(data_headers)
     let output = await postMagick("011e88032a07454c130024735dd52f10", data_headers);
 
     if (output) {
@@ -92,7 +98,7 @@ export const isBlocked = async (req, res) => {
       }
     }
     console.log(result)
-    return res.status(200).send(result)
+    return res.status(200).send(data_headers)
   } catch (e) {
     return res.status(400).send(e)
 
