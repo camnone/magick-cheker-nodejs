@@ -1,0 +1,1 @@
+# magick-cheker-nodejs
